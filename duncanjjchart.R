@@ -4,6 +4,8 @@ library(ballr)
 library(ggpubr)
 library(purrr)
 
+#gathering shot charts for Duncan Robinson dribble shots, Duncan Robinson spot-up, JJ Redick dribble shots, and JJ Redick Spot-up.
+
 duncandrib <- 
   teams_shots(teams = "Miami Heat", seasons = 2020) %>% 
   filter(namePlayer == "Duncan Robinson" & (typeAction == "Pullup Jump shot" | typeAction == "Step Back Jump shot"))
@@ -25,15 +27,19 @@ jjspot <-
   mutate(jjspot, shotmake = ifelse(isShotMade == TRUE, 1, 0)) %>% 
   mutate(jjspot, shottot = 1) 
   
-
+#getting court plot from ballr library
 
 source("https://raw.githubusercontent.com/toddwschneider/ballr/master/plot_court.R")
 source("https://raw.githubusercontent.com/toddwschneider/ballr/master/court_themes.R")
+
+#plots court
 
 plot_court()
 court_points <-
   court_points %>% 
   mutate_if(is.numeric, ~.*10)
+
+#plotting each individual shot chart based on which player and type of statistic.
 
 DRdribchart <- 
   ggplot(duncandrib, aes(x = locationX, y = locationY + 45, color = typeEvent, size = distanceShot)) +
@@ -99,7 +105,7 @@ JJspotchart <-
         legend.position = "none") +
   annotate(geom = "text", x = -20, y = 400, label = "42.9%", hjust = "left", size = 11, family = "Palatino")
              
-
+#combining all 4 charts into 1 plot using ggpubr library
 
 graph <-
   ggarrange(DRdribchart, 
